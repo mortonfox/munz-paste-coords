@@ -61,7 +61,7 @@ function init() {
             setStatusOk('Fetched coordinates from clipboard');
           }
         } catch (e) {
-          setStatusError('Failed to read clipboard: ' + err);
+          setStatusError('Failed to read clipboard: ' + e);
         }
       }
     );

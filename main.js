@@ -1,9 +1,16 @@
 // jshint strict: true, esversion: 8
 
-function init() {
+async function run() {
   'use strict';
 
-  function setupElems() {
+  async function waitForElem(getter) {
+    while (getter() == null) {
+      await new Promise(resolve => requestAnimationFrame(resolve));
+    }
+    return getter();
+  }
+
+  async function setupElems() {
     let status_mesg = document.createElement('div');
     status_mesg.name = status_mesg.id = 'paste_coords_status_mesg';
     status_mesg.style.display = 'none';
@@ -12,18 +19,8 @@ function init() {
     fragment.appendChild(pasteButton());
     fragment.appendChild(status_mesg);
 
-    // let mainarea = document.getElementsByClassName('munzee-main-area');
-    // mainarea[0].appendChild(fragment);
-
-    function waitForSite() {
-      let targetelem = document.getElementById('munzee-edit-page');
-      if (targetelem !== null) {
-        clearInterval(waitForSiteTimer);
-        targetelem.appendChild(fragment);
-      }
-    }
-    // Wait for site to finish loading before inserting button.
-    let waitForSiteTimer = setInterval(waitForSite, 100);
+    let elem = await waitForElem(() => document.getElementById('munzee-edit-page'));
+    elem.appendChild(fragment);
   }
 
   function setStatus(text, isError) {
@@ -66,8 +63,6 @@ function init() {
             setStatusError('Coordinates not found in clipboard');
           }
           else {
-            // document.getElementById('latitude').value = coords[0];
-            // document.getElementById('longitude').value = coords[1];
             document.querySelector('input[name="latitude"]').value = coords[0];
             document.querySelector('input[name="longitude"]').value = coords[1];
             setStatusOk('Fetched coordinates from clipboard');
@@ -81,9 +76,23 @@ function init() {
     return btn;
   }
 
-  setupElems();
+  await setupElems();
 }
 
-init();
+// Run the paste button inserter the first time and also whenever the URL
+// changes. Some links in the new Munzee web interface do not reload the page.
+const observeUrlChange = () => {
+  let oldHref = null;
+  const body = document.querySelector('body');
+  const observer = new MutationObserver(mutations => {
+    if (oldHref !== document.location.href) {
+      oldHref = document.location.href;
+      run();
+    }
+  });
+  observer.observe(body, { childList: true, subtree: true });
+};
+
+window.onload = observeUrlChange;
 
 // -- The End --

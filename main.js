@@ -12,8 +12,18 @@ function init() {
     fragment.appendChild(pasteButton());
     fragment.appendChild(status_mesg);
 
-    let mainarea = document.getElementsByClassName('munzee-main-area');
-    mainarea[0].appendChild(fragment);
+    // let mainarea = document.getElementsByClassName('munzee-main-area');
+    // mainarea[0].appendChild(fragment);
+
+    function waitForSite() {
+      let targetelem = document.getElementById('munzee-edit-page');
+      if (targetelem !== null) {
+        clearInterval(waitForSiteTimer);
+        targetelem.appendChild(fragment);
+      }
+    }
+    // Wait for site to finish loading before inserting button.
+    let waitForSiteTimer = setInterval(waitForSite, 100);
   }
 
   function setStatus(text, isError) {
@@ -28,7 +38,7 @@ function init() {
   function pasteButton() {
     let btn = document.createElement('button');
     btn.name = btn.id = 'paste_coords';
-    btn.style.cssText = 'background-color: #fff; color: #E82A24; font-weight: 700; border: solid #E82A24; padding: 6px 10px; cursor: pointer; margin: 0; display: block';
+    btn.style.cssText = 'width: 20em; background-color: #fff; color: #E82A24; font-weight: 700; border: solid #E82A24; padding: 6px 10px; cursor: pointer; margin: 0; display: inline-block';
     btn.appendChild(document.createTextNode('Paste Coords'));
 
     btn.addEventListener('mouseenter',
@@ -56,8 +66,10 @@ function init() {
             setStatusError('Coordinates not found in clipboard');
           }
           else {
-            document.getElementById('latitude').value = coords[0];
-            document.getElementById('longitude').value = coords[1];
+            // document.getElementById('latitude').value = coords[0];
+            // document.getElementById('longitude').value = coords[1];
+            document.querySelector('input[name="latitude"]').value = coords[0];
+            document.querySelector('input[name="longitude"]').value = coords[1];
             setStatusOk('Fetched coordinates from clipboard');
           }
         } catch (e) {

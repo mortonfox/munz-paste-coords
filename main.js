@@ -1,6 +1,6 @@
 // jshint strict: true, esversion: 8
 
-async function run() {
+function run() {
   'use strict';
 
   async function waitForElem(getter) {
@@ -20,7 +20,8 @@ async function run() {
     fragment.appendChild(status_mesg);
 
     let elem = await waitForElem(() => document.getElementById('munzee-edit-page'));
-    elem.appendChild(fragment);
+    // Add the button only if not already there
+    if (!document.getElementById('paste_coords')) elem.appendChild(fragment);
   }
 
   function setStatus(text, isError) {
@@ -76,7 +77,7 @@ async function run() {
     return btn;
   }
 
-  await setupElems();
+  setupElems();
 }
 
 // Run the paste button inserter the first time and also whenever the URL

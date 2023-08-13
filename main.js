@@ -19,7 +19,7 @@ function run() {
     fragment.appendChild(pasteButton());
     fragment.appendChild(status_mesg);
 
-    let elem = await waitForElem(() => document.getElementById('munzee-edit-page'));
+    let elem = await waitForElem(() => document.querySelector('#munzee-edit-page div div'));
     // Add the button only if not already there
     if (!document.getElementById('paste_coords')) elem.appendChild(fragment);
   }

@@ -77,6 +77,10 @@ function run() {
     return btn;
   }
 
+  // Check if we are on a munzee map page.
+  let loc = window.location.href;
+  if (!/munzee.com\/m\/\w+\/\d+\/admin\/map$/.test(loc)) return;
+
   setupElems();
 }
 

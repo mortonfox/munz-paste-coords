@@ -64,8 +64,14 @@ function run() {
             setStatusError('Coordinates not found in clipboard');
           }
           else {
-            document.querySelector('input[name="latitude"]').value = coords[0];
-            document.querySelector('input[name="longitude"]').value = coords[1];
+            let input1 = document.querySelector('input[name="latitude"]');
+            input1.value = coords[0];
+            input1.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+
+            let input2 = document.querySelector('input[name="longitude"]');
+            input2.value = coords[1];
+            input2.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
+
             setStatusOk('Fetched coordinates from clipboard');
           }
         } catch (e) {
